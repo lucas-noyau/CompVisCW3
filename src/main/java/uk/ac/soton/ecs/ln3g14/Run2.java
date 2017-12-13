@@ -1,8 +1,15 @@
 package uk.ac.soton.ecs.ln3g14;
 
+import org.openimaj.data.dataset.Dataset;
 import org.openimaj.data.dataset.GroupedDataset;
 import org.openimaj.data.dataset.ListDataset;
+import org.openimaj.feature.DoubleFV;
+import org.openimaj.feature.FeatureExtractor;
 import org.openimaj.image.FImage;
+import org.openimaj.image.annotation.evaluation.datasets.Caltech101.Record;
+import org.openimaj.image.feature.dense.gradient.dsift.PyramidDenseSIFT;
+import org.openimaj.ml.clustering.assignment.HardAssigner;
+import org.openimaj.util.pair.IntFloatPair;
 
 
 /*
@@ -35,8 +42,26 @@ public class Run2 extends Classifier {
 	/*
 	 * 
 	 */
-	void 
 	
+	
+	
+	
+	
+	/*
+	 * 
+	 */
+	static HardAssigner<byte[], float[], IntFloatPair> trainQuantiser(Dataset<Record<FImage>> sample, PyramidDenseSIFT<FImage> pdsift) {
+		return null;
+	}
+	
+	static class PHOWExtractor implements FeatureExtractor<DoubleFV, Record<FImage>> {
+		@Override
+		public DoubleFV extractFeature(Record<FImage> arg0) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+	}
+
 	/*
 	 * Run against testing data
 	 */
