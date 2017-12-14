@@ -8,34 +8,17 @@ import org.openimaj.image.FImage;
 
 public class Main {
 	
-	String trainingDataPath = "/Users/lucas/Desktop/openimaj-coursework3/data/training_small/";
-	String testingDataPath = "zip:/Users/lucas/Desktop/openimaj-coursework3/data/testing.zip";	
+	static String trainingDataPath = "/Users/lucas/Desktop/openimaj-coursework3/data/training_small/";
+	static String testingDataPath = "zip:/Users/lucas/Desktop/openimaj-coursework3/data/testing.zip";	
 
 	public static void main(String[] args) {
 		Main m = new Main();
-//		m.run1();
-		m.run2();
-		
+		new Run1(trainingDataPath, testingDataPath).go();
+		new Run2(trainingDataPath, testingDataPath).go();
 	}
 	
 	GroupedDataset<String, ListDataset<FImage>, FImage> generateSubsets(VFSGroupDataset<FImage> input, int numGroups) {
 		System.out.println("	Generating subsets of training and testing data");
 		return GroupSampler.sample(input, numGroups, false);
-	}
-	
-	void run1() {
-		System.out.println("	Initialising");
-		MyClassifier c = new Run1(trainingDataPath, testingDataPath);
-		System.out.println("	Starting classifier up");
-		c.go();
-		System.out.println("	Completed");
-	}
-	
-	void run2() {
-		System.out.println("	Initialising");
-		MyClassifier c = new Run2(trainingDataPath, testingDataPath);
-		System.out.println("	Starting classifier up");
-		c.go();
-		System.out.println("	Completed");
 	}
 }

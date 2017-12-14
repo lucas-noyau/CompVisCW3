@@ -27,13 +27,13 @@ import org.openimaj.util.pair.IntDoublePair;
  */
 public class Run1 extends MyClassifier {
 	
-	final int kValue = 15;
-	final int resolution = 16;
+	int kValue = 15;
+	int resolution = 16;
 
 	List<String> classes;
 	List<double[]> featureVectors;
 
-	private DoubleNearestNeighboursExact knn;
+	DoubleNearestNeighboursExact knn;
 
 	Run1() {
 		super();
@@ -41,14 +41,6 @@ public class Run1 extends MyClassifier {
 	
 	Run1(String trainingDataPath, String testingDataPath) {
 		super(trainingDataPath, testingDataPath);
-	}
-	
-	@Override
-	void go() {
-		this.train(trainingData);
-		System.out.println("	Testing Against Data");
-		ArrayList<String> results = classify(testingData);
-		printResults(results);
 	}
 	
 	@Override

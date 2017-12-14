@@ -44,14 +44,6 @@ public class Run3 extends MyClassifier {
 	}
 	
 	@Override
-	void go() {
-		this.train(trainingData);
-		System.out.println("	Testing Against Data");
-		ArrayList<String> results = classify(testingData);
-		printResults(results);
-	}
-	
-	@Override
 	void train(GroupedDataset<String,ListDataset<FImage>,FImage> data) {
 		System.out.println("	Generate Feature Vectors");
 		// Generate feature vectors

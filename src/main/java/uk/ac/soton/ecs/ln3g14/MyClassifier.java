@@ -39,6 +39,13 @@ public abstract class MyClassifier {
 		return null;
 	}
 	
+	void go() {
+		this.train(trainingData);
+		System.out.println("	Testing Against Data");
+		ArrayList<String> results = classify(testingData);
+		printResults(results);
+	}
+	
 	void printResults(ArrayList<String> results) {
 		PrintWriter out;
 		try {
@@ -67,7 +74,6 @@ public abstract class MyClassifier {
 		return results;
 	}
 	
-	abstract void go();
 	abstract void train(GroupedDataset<String,ListDataset<FImage>,FImage> data);
 	abstract String classify(FImage image);
 }

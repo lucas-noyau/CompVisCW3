@@ -44,11 +44,11 @@ import de.bwaldvogel.liblinear.SolverType;
 public class Run2 extends MyClassifier {
 	
 	// Clustering params
-	final static int clusters = 500;
+	static int clusters = 500;
 
 	// Patch params
-	final static float step = 4;
-	final static float patchSize = 8;
+	static float step = 4;
+	static float patchSize = 8;
 	
 	LiblinearAnnotator<FImage,String> annotator;
 	
@@ -58,17 +58,6 @@ public class Run2 extends MyClassifier {
 	
 	Run2(String trainingDataPath, String testingDataPath) {
 		super(trainingDataPath, testingDataPath);
-	}
-	
-	/*
-	 * 
-	 */
-	@Override
-	void go() {
-		this.train(trainingData);
-		System.out.println("Testing Against Data");
-		ArrayList<String> results = classify(testingData);
-		printResults(results);
 	}
 	
 	@Override
@@ -121,25 +110,17 @@ public class Run2 extends MyClassifier {
 	}
 	
 	/*
-	 * 
+	 * Our extractor class
 	 */
 	static class Extractor implements FeatureExtractor<DoubleFV,FImage> {
 		HardAssigner<float[],float[],IntFloatPair> assigner;
-		
-		Extractor(HardAssigner<float[],float[],IntFloatPair> assigner) {
-			this.assigner = assigner;
-		}
-
-		/*
-		 * Extract features from the image using Bag Of Words
-		 */
+		Extractor(HardAssigner<float[],float[],IntFloatPair> assigner) {this.assigner = assigner;}
 		@Override
 		public DoubleFV extractFeature(FImage image) {
 			BagOfVisualWords<float[]> bagOfWords = new BagOfVisualWords<float[]>(assigner);
 			BlockSpatialAggregator<float[],SparseIntFV> aggregator = new BlockSpatialAggregator<float[],SparseIntFV>(bagOfWords, 2, 2);
 			return aggregator.aggregate(Run2.extractFeature(image), image.getBounds()).normaliseFV();
 		}
-
 	}
 
 	
