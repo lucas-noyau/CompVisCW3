@@ -6,6 +6,7 @@ import java.util.List;
 import org.openimaj.data.dataset.Dataset;
 import org.openimaj.data.dataset.GroupedDataset;
 import org.openimaj.data.dataset.ListDataset;
+import org.openimaj.experiment.dataset.sampling.GroupSampler;
 import org.openimaj.experiment.evaluation.classification.ClassificationResult;
 import org.openimaj.feature.DoubleFV;
 import org.openimaj.feature.FeatureExtractor;
@@ -44,7 +45,6 @@ public class Run2 extends Classifier {
 	
 	// Clustering params
 	final static int clusters = 500;
-	final static int vocabImages = 10;
 
 	// Patch params
 	final static float step = 4;
@@ -74,7 +74,7 @@ public class Run2 extends Classifier {
 	@Override
 	void train(GroupedDataset<String,ListDataset<FImage>,FImage> data) {
 		System.out.println("	Generating Vocab");
-		HardAssigner<float[],float[],IntFloatPair> assigner = trainQuantiser(trainingData);
+		HardAssigner<float[],float[],IntFloatPair> assigner = trainQuantiser(data);
 		System.out.println("	Generating FeatureExtractor");
 		FeatureExtractor<DoubleFV,FImage> featureExtractor = new Extractor(assigner);
 		System.out.println("	Generating Linear Classifier");
@@ -153,7 +153,7 @@ public class Run2 extends Classifier {
 				FImage image = data.get(group).get(i);
 				
 				ClassificationResult<String> guessedClass = classify(image);
-//				results.addAll(guessedClass);
+				results.addAll(guessedClass);
 				
 			}
 		}

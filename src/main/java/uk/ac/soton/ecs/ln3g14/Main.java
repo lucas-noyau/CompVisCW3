@@ -8,7 +8,7 @@ import org.openimaj.image.FImage;
 
 public class Main {
 	
-	String trainingDataPath = "/Users/lucas/Desktop/openimaj-coursework3/data/training/";
+	String trainingDataPath = "/Users/lucas/Desktop/openimaj-coursework3/data/training_small/";
 	String testingDataPath = "zip:/Users/lucas/Desktop/openimaj-coursework3/data/testing.zip";	
 
 	public static void main(String[] args) {
