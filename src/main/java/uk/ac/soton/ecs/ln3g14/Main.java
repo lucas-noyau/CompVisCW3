@@ -12,7 +12,6 @@ public class Main {
 	static String testingDataPath = "zip:/Users/lucas/Desktop/openimaj-coursework3/data/testing.zip";	
 
 	public static void main(String[] args) {
-		Main m = new Main();
 		new Run1(trainingDataPath, testingDataPath).go();
 		new Run2(trainingDataPath, testingDataPath).go();
 	}
