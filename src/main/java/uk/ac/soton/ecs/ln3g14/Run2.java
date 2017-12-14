@@ -8,19 +8,33 @@ import org.openimaj.feature.FeatureExtractor;
 import org.openimaj.image.FImage;
 import org.openimaj.image.annotation.evaluation.datasets.Caltech101.Record;
 import org.openimaj.image.feature.dense.gradient.dsift.PyramidDenseSIFT;
+import org.openimaj.ml.annotation.linear.LiblinearAnnotator;
 import org.openimaj.ml.clustering.assignment.HardAssigner;
 import org.openimaj.util.pair.IntFloatPair;
 
 
 /*
- * K-nearest-neighbour classifier using the "tiny image" feature.
- * Crop to square
- * Simplify to fixed resolution
- * Pack pixels into vector
- * Use k-nearest-neighbour with best possible k-value
+ * Set of linear classifiers using bag-of-words.
+ * 
+ * Get vocabImages from each class
+ * Sample dense patches of set size for each step
+ * create a feature vector for each patch
+ * use k-means on the vectors to obtain a set number of clusters
+ * Generate a HardAssigner and a feature extractor
+ * 
  */
 public class Run2 extends Classifier {
+	
+	// Clustering params
+	final int clusters = 500;
+	final int vocabImages = 10;
 
+	// Patch params
+	final float step = 4;
+	final float patchSize = 8;
+	
+	LiblinearAnnotator<FImage,String> annotator;
+	
 	Run2() {
 		super();
 	}
@@ -54,6 +68,9 @@ public class Run2 extends Classifier {
 		return null;
 	}
 	
+	/*
+	 * 
+	 */
 	static class PHOWExtractor implements FeatureExtractor<DoubleFV, Record<FImage>> {
 		@Override
 		public DoubleFV extractFeature(Record<FImage> arg0) {
