@@ -33,33 +33,33 @@ import de.bwaldvogel.liblinear.SolverType;
 
 /*
  * Set of linear classifiers using bag-of-words.
- * 
+ *
  * Get vocabImages from each class
  * Sample dense patches of set size for each step
  * create a feature vector for each patch
  * use k-means on the vectors to obtain a set number of clusters
  * Generate a HardAssigner and a feature extractor
- * 
+ *
  */
 public class Run2 extends MyClassifier {
-	
+
 	// Clustering params
 	static int clusters = 500;
 
 	// Patch params
 	static float step = 4;
 	static float patchSize = 8;
-	
+
 	LiblinearAnnotator<FImage,String> annotator;
-	
+
 	Run2() {
 		super();
 	}
-	
+
 	Run2(String trainingDataPath, String testingDataPath) {
 		super(trainingDataPath, testingDataPath);
 	}
-	
+
 	@Override
 	void train(GroupedDataset<String,ListDataset<FImage>,FImage> data) {
 		System.out.println("	Generating Vocab");
@@ -72,9 +72,9 @@ public class Run2 extends MyClassifier {
 		annotator.train(data);
 		System.out.println("	Training Complete");
 	}
-	
+
 	/*
-	 * 
+	 *
 	 */
 	static HardAssigner<float[],float[],IntFloatPair> trainQuantiser(Dataset<FImage> data) {
 		List<float[]> allkeys = new ArrayList<float[]>();
@@ -88,9 +88,9 @@ public class Run2 extends MyClassifier {
 		FloatCentroidsResult result = km.cluster(datasource);
 		return result.defaultHardAssigner();
 	}
-	
+
 	/*
-	 * 
+	 *
 	 */
 	static List<LocalFeature<SpatialLocation,FloatFV>> extractFeature(FImage image) {
 		List<LocalFeature<SpatialLocation,FloatFV>> featureList = new ArrayList<LocalFeature<SpatialLocation,FloatFV>>();
@@ -99,16 +99,21 @@ public class Run2 extends MyClassifier {
 		// extract feature from each position
 		for (Rectangle rectangle : rectangles) {
 			FImage area = image.extractROI(rectangle);
-			// Convert 2D to 1D array
-			float[] vector = ArrayUtils.reshape(area.pixels);
-			FloatFV featureV = new FloatFV(vector);
+
+			float[] areaVals = //create float array with values of each pixel in image
+
+			float cAvg = centeredAverage(areaVals);
+
+			float[] vector = ArrayUtils.reshape(area.pixels); //useful anymore?
+
+			FloatFV featureV = new FloatFV(vector); //useful anymore?
 			SpatialLocation location = new SpatialLocation(rectangle.x, rectangle.y);
-			LocalFeature<SpatialLocation, FloatFV> feature = new LocalFeatureImpl<SpatialLocation, FloatFV>(location, featureV);
+			LocalFeature<SpatialLocation, FloatFV> feature = new LocalFeatureImpl<SpatialLocation, FloatFV>(location, featureV); //should just be (location, value)?
 			featureList.add(feature);
 		}
 		return featureList;
 	}
-	
+
 	/*
 	 * Our extractor class
 	 */
@@ -123,7 +128,7 @@ public class Run2 extends MyClassifier {
 		}
 	}
 
-	
+
 	/*
 	 * Run against single image
 	 */
@@ -131,4 +136,22 @@ public class Run2 extends MyClassifier {
 	String classify(FImage image) {
 		return annotator.classify(image);
 	}
+
+	/*
+	 * Find Centered Average of Double Array
+	 */
+	public float centeredAverage(float[] vals) {
+		float sum = 0;
+		float min = vals[0];
+		float max = vals[0];
+
+		for(int i = 0; i < nums.length; i++) {
+				sum += nums[i];
+				min = Math.min(min, vals[i]);
+				max = Math.max(max, vals[i]);
+		}
+
+	return (sum - min - max) / (nums.length - 2);
+	}
+
 }
