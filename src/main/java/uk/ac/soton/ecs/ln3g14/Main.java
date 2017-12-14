@@ -25,7 +25,7 @@ public class Main {
 	
 	void run1() {
 		System.out.println("	Initialising");
-		Classifier c = new Run1(trainingDataPath, testingDataPath);
+		MyClassifier c = new Run1(trainingDataPath, testingDataPath);
 		System.out.println("	Starting classifier up");
 		c.go();
 		System.out.println("	Completed");
@@ -33,7 +33,7 @@ public class Main {
 	
 	void run2() {
 		System.out.println("	Initialising");
-		Classifier c = new Run2(trainingDataPath, testingDataPath);
+		MyClassifier c = new Run2(trainingDataPath, testingDataPath);
 		System.out.println("	Starting classifier up");
 		c.go();
 		System.out.println("	Completed");

@@ -14,15 +14,15 @@ import org.openimaj.image.FImage;
 import org.openimaj.image.ImageUtilities;
 
 
-public abstract class Classifier {
+public abstract class MyClassifier {
 	
 	GroupedDataset<String,ListDataset<FImage>,FImage> trainingData, testingData;
 
-	Classifier() {
+	MyClassifier() {
 		super();
 	}
 	
-	Classifier(String trainingDataPath, String testingDataPath) {
+	MyClassifier(String trainingDataPath, String testingDataPath) {
 		super();
 		this.trainingData = getData(trainingDataPath);
 		this.testingData = getData(testingDataPath);
@@ -55,7 +55,19 @@ public abstract class Classifier {
 		}
 	}
 	
+	ArrayList<String> classify(GroupedDataset<String,ListDataset<FImage>,FImage> data) {
+		ArrayList<String> results = new ArrayList<String>();
+		for(String group : data.getGroups()){
+			for(int i = 0; i < data.get(group).size(); i++) {
+				FImage image = data.get(group).get(i);
+				String guessedClass = classify(image);
+				results.add(guessedClass);
+			}
+		}
+		return results;
+	}
+	
 	abstract void go();
 	abstract void train(GroupedDataset<String,ListDataset<FImage>,FImage> data);
-	abstract ArrayList<String> classify(GroupedDataset<String,ListDataset<FImage>,FImage> data);
+	abstract String classify(FImage image);
 }

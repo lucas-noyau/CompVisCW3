@@ -41,7 +41,7 @@ import de.bwaldvogel.liblinear.SolverType;
  * Generate a HardAssigner and a feature extractor
  * 
  */
-public class Run2 extends Classifier {
+public class Run2 extends MyClassifier {
 	
 	// Clustering params
 	final static int clusters = 500;
@@ -142,28 +142,12 @@ public class Run2 extends Classifier {
 
 	}
 
-	/*
-	 * Run against testing data
-	 */
-	@Override
-	ArrayList<String> classify(GroupedDataset<String,ListDataset<FImage>,FImage> data) {
-		ArrayList<String> results = new ArrayList<String>();
-		for(String group : data.getGroups()){
-			for(int i = 0; i < data.get(group).size(); i++) {
-				FImage image = data.get(group).get(i);
-				
-				ClassificationResult<String> guessedClass = classify(image);
-				results.addAll(guessedClass);
-				
-			}
-		}
-		return results;
-	}
 	
 	/*
 	 * Run against single image
 	 */
-	ClassificationResult<String> classify(FImage image) {
+	@Override
+	String classify(FImage image) {
 		return annotator.classify(image);
 	}
 }

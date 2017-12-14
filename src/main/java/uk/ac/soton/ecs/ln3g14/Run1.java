@@ -25,7 +25,7 @@ import org.openimaj.util.pair.IntDoublePair;
  * Pack pixels into vector
  * Use k-nearest-neighbour with best possible k-value
  */
-public class Run1 extends Classifier {
+public class Run1 extends MyClassifier {
 	
 	final int kValue = 15;
 	final int resolution = 16;
@@ -98,24 +98,9 @@ public class Run1 extends Classifier {
 	}
 	
 	/*
-	 * Run against testing data
-	 */
-	@Override
-	ArrayList<String> classify(GroupedDataset<String,ListDataset<FImage>,FImage> data) {
-		ArrayList<String> results = new ArrayList<String>();
-		for(String group : data.getGroups()){
-			for(int i = 0; i < data.get(group).size(); i++) {
-				FImage image = data.get(group).get(i);
-				String guessedClass = classify(image);
-				results.add(guessedClass);
-			}
-		}
-		return results;
-	}
-	
-	/*
 	 * Run against single image
 	 */
+	@Override
 	String classify(FImage image) {
 		// Create Feature Vector for image
 		double[] vector = extractFeature(image);
