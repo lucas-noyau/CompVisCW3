@@ -6,8 +6,6 @@ import java.util.List;
 import org.openimaj.data.dataset.Dataset;
 import org.openimaj.data.dataset.GroupedDataset;
 import org.openimaj.data.dataset.ListDataset;
-import org.openimaj.experiment.dataset.sampling.GroupSampler;
-import org.openimaj.experiment.evaluation.classification.ClassificationResult;
 import org.openimaj.feature.DoubleFV;
 import org.openimaj.feature.FeatureExtractor;
 import org.openimaj.feature.FloatFV;
@@ -100,18 +98,32 @@ public class Run2 extends MyClassifier {
 		for (Rectangle rectangle : rectangles) {
 			FImage area = image.extractROI(rectangle);
 
-			float[] areaVals; //create float array with values of each pixel in image
+			float[] vector = ArrayUtils.reshape(area.pixels);
+			float average = centeredAverage(vector);
 
-			float cAvg = centeredAverage(areaVals);
-
-			float[] vector = ArrayUtils.reshape(area.pixels); //useful anymore?
-
-			FloatFV featureV = new FloatFV(vector); //useful anymore?
+			FloatFV featureV = new FloatFV(vector);
 			SpatialLocation location = new SpatialLocation(rectangle.x, rectangle.y);
 			LocalFeature<SpatialLocation, FloatFV> feature = new LocalFeatureImpl<SpatialLocation, FloatFV>(location, featureV); //should just be (location, value)?
 			featureList.add(feature);
 		}
 		return featureList;
+	}
+	
+	/*
+	 * Find Centered Average of Double Array
+	 */
+	public static float centeredAverage(float[] vals) {
+		float sum = 0;
+		float min = vals[0];
+		float max = vals[0];
+
+		for(int i = 0; i < vals.length; i++) {
+				sum += vals[i];
+				min = Math.min(min, vals[i]);
+				max = Math.max(max, vals[i]);
+		}
+
+	return (sum - min - max) / (vals.length - 2);
 	}
 
 	/*
@@ -133,24 +145,6 @@ public class Run2 extends MyClassifier {
 	 */
 	@Override
 	String classify(FImage image) {
-		return annotator.classify(image);
+		return annotator.classify(image).getPredictedClasses().iterator().next();
 	}
-
-	/*
-	 * Find Centered Average of Double Array
-	 */
-	public static float centeredAverage(float[] vals) {
-		float sum = 0;
-		float min = vals[0];
-		float max = vals[0];
-
-		for(int i = 0; i < vals.length; i++) {
-				sum += vals[i];
-				min = Math.min(min, vals[i]);
-				max = Math.max(max, vals[i]);
-		}
-
-	return (sum - min - max) / (vals.length - 2);
-	}
-
 }
