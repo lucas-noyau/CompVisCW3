@@ -100,7 +100,7 @@ public class Run2 extends MyClassifier {
 		for (Rectangle rectangle : rectangles) {
 			FImage area = image.extractROI(rectangle);
 
-			float[] areaVals = //create float array with values of each pixel in image
+			float[] areaVals; //create float array with values of each pixel in image
 
 			float cAvg = centeredAverage(areaVals);
 
@@ -128,7 +128,6 @@ public class Run2 extends MyClassifier {
 		}
 	}
 
-
 	/*
 	 * Run against single image
 	 */
@@ -140,18 +139,18 @@ public class Run2 extends MyClassifier {
 	/*
 	 * Find Centered Average of Double Array
 	 */
-	public float centeredAverage(float[] vals) {
+	public static float centeredAverage(float[] vals) {
 		float sum = 0;
 		float min = vals[0];
 		float max = vals[0];
 
-		for(int i = 0; i < nums.length; i++) {
-				sum += nums[i];
+		for(int i = 0; i < vals.length; i++) {
+				sum += vals[i];
 				min = Math.min(min, vals[i]);
 				max = Math.max(max, vals[i]);
 		}
 
-	return (sum - min - max) / (nums.length - 2);
+	return (sum - min - max) / (vals.length - 2);
 	}
 
 }
