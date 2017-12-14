@@ -13,7 +13,9 @@ public class Main {
 
 	public static void main(String[] args) {
 		Main m = new Main();
-		m.testClassifierGetData();
+//		m.run1();
+		m.run2();
+		
 	}
 	
 	GroupedDataset<String, ListDataset<FImage>, FImage> generateSubsets(VFSGroupDataset<FImage> input, int numGroups) {
@@ -21,10 +23,17 @@ public class Main {
 		return GroupSampler.sample(input, numGroups, false);
 	}
 	
-	void testClassifierGetData() {
-		Run1 c = new Run1(trainingDataPath, testingDataPath);
-		System.out.println("Training Data:\t" + c.trainingData);
-		System.out.println("Testing Data:\t" + c.testingData);
+	void run1() {
+		System.out.println("	Initialising");
+		Classifier c = new Run1(trainingDataPath, testingDataPath);
+		System.out.println("	Starting classifier up");
+		c.go();
+		System.out.println("	Completed");
+	}
+	
+	void run2() {
+		System.out.println("	Initialising");
+		Classifier c = new Run2(trainingDataPath, testingDataPath);
 		System.out.println("	Starting classifier up");
 		c.go();
 		System.out.println("	Completed");

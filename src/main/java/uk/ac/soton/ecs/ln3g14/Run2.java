@@ -1,16 +1,33 @@
 package uk.ac.soton.ecs.ln3g14;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openimaj.data.dataset.Dataset;
 import org.openimaj.data.dataset.GroupedDataset;
 import org.openimaj.data.dataset.ListDataset;
+import org.openimaj.experiment.evaluation.classification.ClassificationResult;
 import org.openimaj.feature.DoubleFV;
 import org.openimaj.feature.FeatureExtractor;
+import org.openimaj.feature.FloatFV;
+import org.openimaj.feature.SparseIntFV;
+import org.openimaj.feature.local.LocalFeature;
+import org.openimaj.feature.local.LocalFeatureImpl;
+import org.openimaj.feature.local.SpatialLocation;
 import org.openimaj.image.FImage;
-import org.openimaj.image.annotation.evaluation.datasets.Caltech101.Record;
-import org.openimaj.image.feature.dense.gradient.dsift.PyramidDenseSIFT;
+import org.openimaj.image.feature.local.aggregate.BagOfVisualWords;
+import org.openimaj.image.feature.local.aggregate.BlockSpatialAggregator;
+import org.openimaj.image.pixel.sampling.RectangleSampler;
+import org.openimaj.math.geometry.shape.Rectangle;
 import org.openimaj.ml.annotation.linear.LiblinearAnnotator;
+import org.openimaj.ml.annotation.linear.LiblinearAnnotator.Mode;
+import org.openimaj.ml.clustering.FloatCentroidsResult;
 import org.openimaj.ml.clustering.assignment.HardAssigner;
+import org.openimaj.ml.clustering.kmeans.FloatKMeans;
+import org.openimaj.util.array.ArrayUtils;
 import org.openimaj.util.pair.IntFloatPair;
+
+import de.bwaldvogel.liblinear.SolverType;
 
 
 /*
@@ -26,12 +43,12 @@ import org.openimaj.util.pair.IntFloatPair;
 public class Run2 extends Classifier {
 	
 	// Clustering params
-	final int clusters = 500;
-	final int vocabImages = 10;
+	final static int clusters = 500;
+	final static int vocabImages = 10;
 
 	// Patch params
-	final float step = 4;
-	final float patchSize = 8;
+	final static float step = 4;
+	final static float patchSize = 8;
 	
 	LiblinearAnnotator<FImage,String> annotator;
 	
@@ -43,53 +60,110 @@ public class Run2 extends Classifier {
 		super(trainingDataPath, testingDataPath);
 	}
 	
+	/*
+	 * 
+	 */
 	@Override
 	void go() {
-		System.out.println("Generate Feature Vectors");
-		// Generate feature vectors
-		// Save feature vectors
+		this.train(trainingData);
 		System.out.println("Testing Against Data");
-		// Test feature vectors
-		classify(testingData);
+		ArrayList<String> results = classify(testingData);
+		printResults(results);
+	}
+	
+	@Override
+	void train(GroupedDataset<String,ListDataset<FImage>,FImage> data) {
+		System.out.println("	Generating Vocab");
+		HardAssigner<float[],float[],IntFloatPair> assigner = trainQuantiser(trainingData);
+		System.out.println("	Generating FeatureExtractor");
+		FeatureExtractor<DoubleFV,FImage> featureExtractor = new Extractor(assigner);
+		System.out.println("	Generating Linear Classifier");
+		annotator = new LiblinearAnnotator<FImage,String>(featureExtractor, Mode.MULTICLASS, SolverType.L2R_L2LOSS_SVC, 1.0, 0.00001);
+		System.out.println("	Training Linear Classifier");
+		annotator.train(data);
+		System.out.println("	Training Complete");
 	}
 	
 	/*
 	 * 
 	 */
-	
-	
-	
-	
-	
-	/*
-	 * 
-	 */
-	static HardAssigner<byte[], float[], IntFloatPair> trainQuantiser(Dataset<Record<FImage>> sample, PyramidDenseSIFT<FImage> pdsift) {
-		return null;
-	}
-	
-	/*
-	 * 
-	 */
-	static class PHOWExtractor implements FeatureExtractor<DoubleFV, Record<FImage>> {
-		@Override
-		public DoubleFV extractFeature(Record<FImage> arg0) {
-			// TODO Auto-generated method stub
-			return null;
+	static HardAssigner<float[],float[],IntFloatPair> trainQuantiser(Dataset<FImage> data) {
+		List<float[]> allkeys = new ArrayList<float[]>();
+		for (FImage image : data) {
+			for (LocalFeature<SpatialLocation, FloatFV> feature : extractFeature(image)) {
+				allkeys.add(feature.getFeatureVector().values);
+			}
 		}
+		FloatKMeans km = FloatKMeans.createKDTreeEnsemble(clusters);
+		float[][] datasource = allkeys.toArray(new float[][]{});
+		FloatCentroidsResult result = km.cluster(datasource);
+		return result.defaultHardAssigner();
+	}
+	
+	/*
+	 * 
+	 */
+	static List<LocalFeature<SpatialLocation,FloatFV>> extractFeature(FImage image) {
+		List<LocalFeature<SpatialLocation,FloatFV>> featureList = new ArrayList<LocalFeature<SpatialLocation,FloatFV>>();
+		// Position for patches
+		RectangleSampler rectangles = new RectangleSampler(image, step, step, patchSize, patchSize);
+		// extract feature from each position
+		for (Rectangle rectangle : rectangles) {
+			FImage area = image.extractROI(rectangle);
+			// Convert 2D to 1D array
+			float[] vector = ArrayUtils.reshape(area.pixels);
+			FloatFV featureV = new FloatFV(vector);
+			SpatialLocation location = new SpatialLocation(rectangle.x, rectangle.y);
+			LocalFeature<SpatialLocation, FloatFV> feature = new LocalFeatureImpl<SpatialLocation, FloatFV>(location, featureV);
+			featureList.add(feature);
+		}
+		return featureList;
+	}
+	
+	/*
+	 * 
+	 */
+	static class Extractor implements FeatureExtractor<DoubleFV,FImage> {
+		HardAssigner<float[],float[],IntFloatPair> assigner;
+		
+		Extractor(HardAssigner<float[],float[],IntFloatPair> assigner) {
+			this.assigner = assigner;
+		}
+
+		/*
+		 * Extract features from the image using Bag Of Words
+		 */
+		@Override
+		public DoubleFV extractFeature(FImage image) {
+			BagOfVisualWords<float[]> bagOfWords = new BagOfVisualWords<float[]>(assigner);
+			BlockSpatialAggregator<float[],SparseIntFV> aggregator = new BlockSpatialAggregator<float[],SparseIntFV>(bagOfWords, 2, 2);
+			return aggregator.aggregate(Run2.extractFeature(image), image.getBounds()).normaliseFV();
+		}
+
 	}
 
 	/*
 	 * Run against testing data
 	 */
-	void classify(GroupedDataset<String,ListDataset<FImage>,FImage> data) {
-
+	@Override
+	ArrayList<String> classify(GroupedDataset<String,ListDataset<FImage>,FImage> data) {
+		ArrayList<String> results = new ArrayList<String>();
+		for(String group : data.getGroups()){
+			for(int i = 0; i < data.get(group).size(); i++) {
+				FImage image = data.get(group).get(i);
+				
+				ClassificationResult<String> guessedClass = classify(image);
+//				results.addAll(guessedClass);
+				
+			}
+		}
+		return results;
 	}
 	
 	/*
 	 * Run against single image
 	 */
-	void classify(FImage image) {
-
+	ClassificationResult<String> classify(FImage image) {
+		return annotator.classify(image);
 	}
 }

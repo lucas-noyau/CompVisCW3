@@ -16,7 +16,7 @@ import org.openimaj.image.ImageUtilities;
 
 public abstract class Classifier {
 	
-	GroupedDataset<String, ListDataset<FImage>, FImage> trainingData, testingData;
+	GroupedDataset<String,ListDataset<FImage>,FImage> trainingData, testingData;
 
 	Classifier() {
 		super();
@@ -56,5 +56,6 @@ public abstract class Classifier {
 	}
 	
 	abstract void go();
-
+	abstract void train(GroupedDataset<String,ListDataset<FImage>,FImage> data);
+	abstract ArrayList<String> classify(GroupedDataset<String,ListDataset<FImage>,FImage> data);
 }

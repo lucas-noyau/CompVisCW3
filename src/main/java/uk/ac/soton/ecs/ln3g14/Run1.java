@@ -45,21 +45,25 @@ public class Run1 extends Classifier {
 	
 	@Override
 	void go() {
-		System.out.println("	Generate Feature Vectors");
-		// Generate feature vectors
-		double[][] featureVectors = extractFeatureVector(trainingData);
-		// Save feature vectors
-		knn = new DoubleNearestNeighboursExact(featureVectors);
+		this.train(trainingData);
 		System.out.println("	Testing Against Data");
-		// Test feature vectors
 		ArrayList<String> results = classify(testingData);
 		printResults(results);
+	}
+	
+	@Override
+	void train(GroupedDataset<String,ListDataset<FImage>,FImage> data) {
+		System.out.println("	Generate Feature Vectors");
+		// Generate feature vectors
+		double[][] featureVectors = extractFeature(trainingData);
+		// Save feature vectors
+		knn = new DoubleNearestNeighboursExact(featureVectors);
 	}
 	
 	/*
 	 * Extracts the feature vectors from a dataset
 	 */
-	double[][] extractFeatureVector(GroupedDataset<String, ListDataset<FImage>, FImage> data) {
+	double[][] extractFeature(GroupedDataset<String, ListDataset<FImage>, FImage> data) {
 		classes = new ArrayList<String>();
 		featureVectors = new ArrayList<double[]>();
 		// For image in the dataset
@@ -67,7 +71,7 @@ public class Run1 extends Classifier {
 			System.out.println(group);
 			for(FImage image : data.get(group)){
 				// extract feature vector
-				double[] vector = extractFeatureVector(image);
+				double[] vector = extractFeature(image);
 				// Add data to lists
 				featureVectors.add(vector);
 				classes.add(group);
@@ -80,7 +84,7 @@ public class Run1 extends Classifier {
 	/*
 	 * Extracts the feature vector from an image
 	 */
-	double[] extractFeatureVector(FImage image) {
+	double[] extractFeature(FImage image) {
 		// Get shortest side of image
 		int side = Math.min(image.height, image.width);
 		// Get cropped image
@@ -96,6 +100,7 @@ public class Run1 extends Classifier {
 	/*
 	 * Run against testing data
 	 */
+	@Override
 	ArrayList<String> classify(GroupedDataset<String,ListDataset<FImage>,FImage> data) {
 		ArrayList<String> results = new ArrayList<String>();
 		for(String group : data.getGroups()){
@@ -113,7 +118,7 @@ public class Run1 extends Classifier {
 	 */
 	String classify(FImage image) {
 		// Create Feature Vector for image
-		double[] vector = extractFeatureVector(image);
+		double[] vector = extractFeature(image);
 		// Find k nearest neighbour
 		List<IntDoublePair> neighbours = knn.searchKNN(vector, kValue);
 		// Count neighbours for each class
