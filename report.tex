@@ -1,5 +1,15 @@
 \documentclass[12pt]{article}
 
+\usepackage{listings}
+
+\lstset{frame=tb,
+	language=Java,
+	basicstyle={\small\ttfamily},
+	breaklines=true,
+	breakatwhitespace=true,
+	tabsize=2
+}
+
 \begin{document}
 
 \begin{center}
@@ -11,21 +21,42 @@ Jean-Luc Mourey - jm32g15 - 28231589\\
 \end{center}
 
 
+% ----------------------------------------------------------------------------
+% ----------------------------------------------------------------------------
 \section{Introduction}
-hello this is a test
 
+% ----------------------------------------------------------------------------
+% ----------------------------------------------------------------------------
 \section{Classifiers}
+All classifiers used in this project extend from the abstract class \texttt{MyClassifier}. It was created in order to limit the amount of repeated code in the other classifiers, as well as give a framework for us to work from. The content of the class is as follows:
+\begin{itemize}
+	\item Class variables are \texttt{trainingData} and \texttt{testingData}. These hold the datasets that are used for training and testing respectively.
+	\item Constructors, one with no parameters, the other uses a String of the path to get the datasets from.
+	\item \texttt{go()} method is used to train and test the classifier on the class variable datasets, with the result being saved by \texttt{printResults(ArrayList)}.
+	\item \texttt{printResults(ArrayList)} takes a list of the predicted classes in String form, and both prints it to \texttt{System.out} and to a file \texttt{output.txt}.
+	\item \texttt{classify(groupedDataset)} takes a dataset and returns the ArrayList of String that is used by \texttt{printResults}. It does this by iterating over all the images in the dataset and calling \texttt{classify(FImage)} on each of them.
+	\item \texttt{train(GroupedDataset)} takes a dataset but doesn't return anything. Each classifier has a different method for training, therefore this method is abstract.
+	\item \texttt{classify{FImage}} is another abstract method, as image classification depends on the classifier. This method return a String of the predicted class name.
+\end{itemize}
+Therefore the only variations in the classifiers listed below are in the \texttt{train(GroupedDataset)} and \texttt{classify(FImage)} methods, although other methods are used in order to remove duplicate code and make the code easier to read.
 
+% ----------------------------------------------------------------------------
 \subsection{Run 1: A Simple k-nearest-neighbour Classifier}
 
+% ----------------------------------------------------------------------------
 \subsection{Run 2: A Set of Linear Classifiers}
 
+% ----------------------------------------------------------------------------
 \subsection{Run 3: Developing The Best Possible Classifier}
 
 
+% ----------------------------------------------------------------------------
+% ----------------------------------------------------------------------------
 \section{Individual Contributions}
 
 
+% ----------------------------------------------------------------------------
+% ----------------------------------------------------------------------------
 \appendix
 \section{Code}
 

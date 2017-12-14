@@ -51,38 +51,7 @@ public class Run3 extends MyClassifier {
 		// Save feature vectors
 		knn = new DoubleNearestNeighboursExact(featureVectors);
 	}
-	
-	/*
-	 * Extracts the feature vectors from a dataset
-	 */
-	double[][] extractFeature(GroupedDataset<String, ListDataset<FImage>, FImage> data) {
-		classes = new ArrayList<String>();
-		featureVectors = new ArrayList<double[]>();
-		// For image in the dataset
-		for(String group : data.getGroups()){
-			System.out.println(group);
-			for(FImage image : data.get(group)){
-				// extract feature vector
-				double[] vector = extractFeature(image);
-				// Add data to lists
-				featureVectors.add(vector);
-				classes.add(group);
-			}
-		}
-		// Return list of all feature vectors
-		return featureVectors.toArray(new double[][]{});
-	}
 
-	/*
-	 * Extracts the feature vector from an image
-	 */
-	double[] extractFeature(FImage image) {
-		return null;
-	}
-	
-	/*
-	 * Run against single image
-	 */
 	@Override
 	String classify(FImage image) {
 		return null;

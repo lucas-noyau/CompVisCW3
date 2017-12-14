@@ -19,11 +19,9 @@ public abstract class MyClassifier {
 	GroupedDataset<String,ListDataset<FImage>,FImage> trainingData, testingData;
 
 	MyClassifier() {
-		super();
 	}
 	
 	MyClassifier(String trainingDataPath, String testingDataPath) {
-		super();
 		this.trainingData = getData(trainingDataPath);
 		this.testingData = getData(testingDataPath);
 	}
@@ -49,7 +47,7 @@ public abstract class MyClassifier {
 	void printResults(ArrayList<String> results) {
 		PrintWriter out;
 		try {
-			out = new PrintWriter(new FileWriter("run1.txt"));
+			out = new PrintWriter(new FileWriter("output.txt"));
 			for (int i = 0; i < results.size(); i++) {
 			String output = i + ".jpg " + results.get(i);
 				out.println(output);
