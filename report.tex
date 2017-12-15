@@ -1,6 +1,7 @@
 \documentclass[a4paper,12pt]{article}
 
 \usepackage{listings}
+\usepackage{color}
 
 \lstset{frame=tb,
 	language=Java,
@@ -42,19 +43,36 @@ Therefore the only variations in the classifiers listed below are in the \texttt
 
 % ----------------------------------------------------------------------------
 \subsection{Run 1: A Simple k-nearest-neighbour Classifier}
+\begin{itemize}
+	\item \texttt{Run1(String, String)}, the constructor. Calls the constructor of its parent class by passing \texttt{trainingDataPath} and \texttt{testingDataPath}.
+	\item \texttt{void train(GroupedDataset<String,ListDataset<FImage>,FImage>)}, which generates the feature vectors of each image in the training dataset and saves them in a \texttt{DoubleNearestNeighboursExact} object. Calls the method below.
+	\item \texttt{extractFeature(GroupedDataset<String, ListDataset<FImage>, FImage>)}, which extracts the feature vectors from the dataset, then iterates over every feature vector over every class, calling the method below each time. Returns the list of all the extracted feature vectors.
+	\item \texttt{extractFeature(FImage)}, which crops the image to a square and resizes it to 16*16 pixels. Returns the new image's feature vector values.
+	\item \texttt{@Override String classify(FImage)}, which modifies its parent class's classifier to \textbf{(I don't actually know this one)}
+\end{itemize}
 
 % ----------------------------------------------------------------------------
 \subsection{Run 2: A Set of Linear Classifiers}
+\begin{itemize}
+	\item \texttt{Run2(String, String)}, the constructor. Calls the constructor of its parent class like in run 1.
+	\item \texttt{train(GroupedDataset<String,ListDataset<FImage>,FImage>)}, which trains an assigner with a "vocabulary" created from the set of training images. It then generates the linear classifier from a generated feature extractor which is trained with the data \textbf{(does it train itself or something else?)}
+	\item \texttt{trainQuantiser(Dataset<FImage>)} \textbf{(not really sure tbh)}, which iterates through every image in the dataset and adds all the values from the feature vectors of each image's rows to a float array list (List<float[]>, not ArrayList<float>)
+	\item \texttt{extractFeature(FImage)}
+\end{itemize}
 
 % ----------------------------------------------------------------------------
 \subsection{Run 3: Developing The Best Possible Classifier}
-
+\begin{itemize}
+	\item \texttt{Run3(String, String)}
+	\item \texttt{train(GroupedDataset<String,ListDataset<FImage>,FImage>)}
+	\item \texttt{classify(FImage)}
+\end{itemize}
 
 % ----------------------------------------------------------------------------
 % ----------------------------------------------------------------------------
 \section{Individual Contributions}
-
-
+All progress made in this coursework was done together in labs. While Lucas was at the helm when it comes to the coding, Jean-Luc researched gaps in our knowledge, like OpenIMAJ classes and methods as well as general information on computer vision concepts; while also helping with identifying issues in code and debugging.
+\textbf{(I feel like you should rewrite what you contributed, because the way I wrote it almost makes it sounds like I did more than you lmfao)}
 % ----------------------------------------------------------------------------
 % ----------------------------------------------------------------------------
 \appendix
