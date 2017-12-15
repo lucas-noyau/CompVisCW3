@@ -63,17 +63,35 @@ Therefore the only variations in the classifiers listed below are in the \texttt
 	\item \texttt{classify(FImage)} is used to pass the image against the \texttt{LiblinearAnnotator.classify()} method, returning the predicted class as a String.
 \end{itemize}
 
+We left run2 working for over an hour (2013 MacBook Pro) on a subset of the data. It was getting stuck at \texttt{FloatKMeans.cluster(float[][])}. Reducing the number of clusters from 500 to 100, and images per class to 1, allowed us to get past this.
+
+We then tried increasing the number of images per class, at 5 the program took much longer to run, but we got results. We attempted to increase this number again, but the run was unsuccessful.
+
 % ----------------------------------------------------------------------------
 \subsection{Run 3: Developing The Best Possible Classifier}
-\begin{itemize}
-	\item \texttt{Run3(String, String)}, the constructor. Calls the constructor of its parent class like in run 1.
-	\item \texttt{train(GroupedDataset<String,ListDataset<FImage>,FImage>)}
-	\item \texttt{classify(FImage)}
-\end{itemize}
+
+For run 3, we wanted to experiment with Neural Networks. We decided to attempt to use TensorFlow to generate a classifier. To do this, we followed an online tutorial \cite{tutorial}. This lead us to use a TenserFlow Github project's program \cite{git}.
+
+Although we had planned to then attempt to create our own Neural Net classifier. Due to time constraints, however, we were unable to get this system working.\\
+
+
+\underline{To be clear}: we did not write the TensorFlow implementation that we used to generate the results for this run. We did write the supporting Python code that allowed us to iterate over the testing data and print it out in the required format. We therefore \underline{cannot take credit} for the accuracy (or lack thereof) of this run.
 
 % ----------------------------------------------------------------------------
 % ----------------------------------------------------------------------------
 \section{Individual Contributions}
 This coursework was done nearly in its entirety during working meetings, in a pseudo-buddy-coding style. Lucas was writing and running the code while Jean-Luc did research, looking up the appropriate methods in the vast OpenImaj library, particular approaches to some problems, and helping with debugging.
+
+\begin{thebibliography}{9}
+\bibitem{tutorial}
+Lin JungHsuan: Create a simple image classifier using Tensorflow,
+\\\texttt{medium.com/@linjunghsuan/ \\
+create-a-simple-image-classifier-using-tensorflow-a7061635984a}
+
+\bibitem{git}
+This is some text
+\texttt{github.com/tensorflow/tensorflow/blob/master/tensorflow/ \\
+examples/image\_retraining/retrain.py}
+\end{thebibliography}
 
 \end{document}

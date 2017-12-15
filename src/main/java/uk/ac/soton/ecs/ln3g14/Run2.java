@@ -43,8 +43,8 @@ import de.bwaldvogel.liblinear.SolverType;
 public class Run2 extends MyClassifier {
 
 	// Clustering params
-	static int clusters = 500;
-	static int imagesPerClass = 10;
+	static int clusters = 100;
+	static int imagesPerClass = 5;
 
 	// Patch params
 	static float step = 4;
@@ -78,16 +78,21 @@ public class Run2 extends MyClassifier {
 	/*
 	 *
 	 */
-	static HardAssigner<float[],float[],IntFloatPair> trainQuantiser(Dataset<FImage> data) {
+	static HardAssigner<float[],float[],IntFloatPair> trainQuantiser(GroupedDataset<String,ListDataset<FImage>,FImage> data) {
 		List<float[]> allkeys = new ArrayList<float[]>();
+		System.out.println("Starting feature extraction");
 		for (FImage image : data) {
 			for (LocalFeature<SpatialLocation, FloatFV> feature : extractFeature(image)) {
 				allkeys.add(feature.getFeatureVector().values);
+				
 			}
 		}
+		System.out.println("Creating Tree Ensemble");
 		FloatKMeans km = FloatKMeans.createKDTreeEnsemble(clusters);
 		float[][] datasource = allkeys.toArray(new float[][]{});
+		System.out.println("Clustering");
 		FloatCentroidsResult result = km.cluster(datasource);
+		System.out.println("Done clustering");
 		return result.defaultHardAssigner();
 	}
 
