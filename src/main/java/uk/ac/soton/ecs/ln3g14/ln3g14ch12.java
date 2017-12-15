@@ -52,9 +52,9 @@ public class ln3g14ch12 {
 		ln3g14ch12 c = new ln3g14ch12();
 
 		c.tutorial();
-		c.ex1();
-		c.ex2();
-		c.ex3();
+//		c.ex1();
+//		c.ex2();
+//		c.ex3();
 	}
 
 	/*
