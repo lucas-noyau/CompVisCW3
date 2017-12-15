@@ -44,12 +44,13 @@ import uk.ac.soton.ecs.ln3g14.ln3g14ch12.PHOWExtractor;
  * Use k-nearest-neighbour with best possible k-value
  */
 public class Run3 extends MyClassifier {
+	// Clustering params
+	static int clusters = 500;
+	static int imagesPerClass = 10;
 
-	final int kValue = 15;
-	final int resolution = 16;
-
-	List<String> classes;
-	List<double[]> featureVectors;
+	// Patch params
+	static float step = 4;
+	static float patchSize = 8;
 
 	LiblinearAnnotator<Record<FImage>, String> annotator;
 
