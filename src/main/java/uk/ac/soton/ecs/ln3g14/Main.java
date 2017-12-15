@@ -15,7 +15,7 @@ public class Main {
 
 	public static void main(String[] args) {
 //		new Run1(trainingDataPath, testingDataPath).go();
-		new Run2(trainingDataPathSmall, testingDataPathSmall).go();
+		new Run2(trainingDataPath, testingDataPath).go();
 	}
 	
 	GroupedDataset<String, ListDataset<FImage>, FImage> generateSubsets(VFSGroupDataset<FImage> input, int numGroups) {
